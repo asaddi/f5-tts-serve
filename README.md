@@ -1,10 +1,19 @@
-# f5-tts-serve
+# kokoro-serve
 
-A simple wrapper around [F5-TTS: A Fairytaler that Fakes Fluent and Faithful Speech with Flow Matching](https://github.com/SWivid/F5-TTS) that provides an OpenAI-compatible API endpoint for speech generation (`/v1/audio/speech`).
+A simple wrapper around [Kokoro-82M]https://huggingface.co/hexgrad/Kokoro-82M) that provides an OpenAI-compatible API endpoint for speech generation (`/v1/audio/speech`).
 
 This is just a toy, a POC, not suitable for production or multi-user use.
 
-Yes, I'm aware of [openedai-speech](https://github.com/matatonic/openedai-speech/) and I was originally going to build on top of that project. But I was curious how easy or hard it would be to write a `/v1/audio/speech` endpoint provider from scratch.
+This is a quick & dirty conversion of my [f5-tts-serve](https://github.com/asaddi/f5-tts-serve).
+
+Also I've only tested/used the Docker version, because...
+
+For *whatever reason*, the Python package `misaki` (a dependency of `kokoro`, by the same author) indirectly brings in this wheel at *run time*:
+
+    server-1  | Collecting en-core-web-sm==3.8.0
+    server-1  |   Downloading https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl (12.8 MB)
+
+Just a word of warning. Always be suspicious of Python wheels coming in from unknown sources.
 
 ## Features
 
@@ -12,7 +21,7 @@ Yes, I'm aware of [openedai-speech](https://github.com/matatonic/openedai-speech
 
    My testing consisted of using `curl`, Open-WebUI, and SillyTavern as frontends.
 
-* Multiple voices are supported. Note: At the moment, the `model` parameter (which is usually given the value `tts-1` or `tts-1-hd`) is totally ignored. Only `voice` matters.
+* Multiple voices are supported. Note: At the moment, the `model` parameter (which is usually given the value `tts-1` or `tts-1-hd`) is totally ignored. Only `voice` matters. (See [the kokoro's VOICES.md](https://huggingface.co/hexgrad/Kokoro-82M/blob/main/VOICES.md) for valid voices for American English. It will default to `af_heart` if given an invalid voice.)
 
 * Can also specify the speaking rate
 
@@ -35,23 +44,13 @@ Yes, I'm aware of [openedai-speech](https://github.com/matatonic/openedai-speech
 
 ## Installation
 
-At the moment, I'm including the F5-TTS project as a git submodule. (Whether or not this is a bad idea, I guess I'll see.)
-
-    git clone --recurse-submodules https://github.com/asaddi/f5-tts-serve.git
-
-Make a copy of the config:
-
-    cp config.yaml.default config.yaml
-
-To add voices, copy a reference WAV file somewhere (like the `voices` directory) and edit `config.yaml`. See the comments there. (The included voice, `basic_ref_en.wav`, originated from F5-TTS.)
-
 Create a venv/virtualenv (or use conda) and then install the requirements:
 
     pip install -r requirements.txt
 
-If you'd like to use something other than CUDA 12.4, use the unpinned requirements and specify `--extra-index-url`, for example:
+If you'd like to use something other than CPU inference, specify `--extra-index-url` with the desired torch URL, for example:
 
-    pip install -r requirements.in --extra-index-url https://download.pytorch.org/whl/cu118
+    pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cu124
 
 ### Docker
 
@@ -80,7 +79,7 @@ See the included `docker-compose.yml` file. But typically, you can run it with:
       -d '{
       "model": "tts-1",
       "input": "That quick beige fox jumped in the air over each thin dog. Look out, I shout, for he'\''s foiled you again, creating chaos.",
-      "voice": "basic",
+      "voice": "af_heart",
       "response_format": "wav"
     }'
 

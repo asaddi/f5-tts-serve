@@ -1,10 +1,9 @@
-name: f5-tts-serve
+name: kokoro-serve
 services:
   server:
     build: .
     volumes:
-      - ./config.yaml:/app/config.yaml
-      - ./voices:/app/voices
+      - ./data:/app/data
     ports:
       - "8000:8000"
     deploy:
