@@ -1,6 +1,6 @@
 # kokoro-serve
 
-A simple wrapper around [Kokoro-82M]https://huggingface.co/hexgrad/Kokoro-82M) that provides an OpenAI-compatible API endpoint for speech generation (`/v1/audio/speech`).
+A simple wrapper around [Kokoro-82M](https://huggingface.co/hexgrad/Kokoro-82M) that provides an OpenAI-compatible API endpoint for speech generation (`/v1/audio/speech`).
 
 This is just a toy, a POC, not suitable for production or multi-user use.
 
