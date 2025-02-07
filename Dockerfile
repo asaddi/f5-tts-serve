@@ -21,6 +21,9 @@ ENV PIP_EXTRA_INDEX_URL=$PIP_EXTRA_INDEX_URL
 
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install -r requirements.txt
+# This is another layer on purpose
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m spacy download en_core_web_sm
 
 VOLUME ["/app/data"]
 ENV HF_HOME=/app/data

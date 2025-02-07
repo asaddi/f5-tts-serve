@@ -13,7 +13,7 @@ For *whatever reason*, the Python package `misaki` (a dependency of `kokoro`, by
     server-1  | Collecting en-core-web-sm==3.8.0
     server-1  |   Downloading https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl (12.8 MB)
 
-Just a word of warning. Always be suspicious of Python wheels coming in from unknown sources.
+Just a word of warning to always be suspicious of Python wheels coming in from unknown sources. (Note: This package is now being baked into the image at build time. The actual Kokoro model will still be fetched from Huggingface if needed, that's what the `/app/data` volume mount is for.)
 
 ## Features
 
